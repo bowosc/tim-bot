@@ -1,7 +1,7 @@
 import requests
 
 
-TESTING = False
+TESTING = True
 
 
 
