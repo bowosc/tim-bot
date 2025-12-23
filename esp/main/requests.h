@@ -8,3 +8,9 @@ extern WebServer server;
 void handleOn();
 
 void handleOff();
+
+void handleCameraSnapshot();
+
+void handleMoveForward();
+
+void handleTurn();

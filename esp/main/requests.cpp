@@ -14,3 +14,23 @@ void handleOff() {
     server.send(200, "text/plain", "OFF");
     Serial.print("Someone used OFF\n");
 }
+
+
+void handleCameraSnapshot() {
+    
+    // get photo from camera
+    // give it to the python man
+}
+
+
+void handleMoveForward() {
+    
+    // Move forward
+    // probably involves turning all wheels on for X time
+}
+
+void handleTurn() {
+    
+    // turn
+    // probably involves turning 1-2 wheels on for X time
+}
