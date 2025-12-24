@@ -12,8 +12,10 @@ DEFAULT_PROMPT = "Give me a short list of objects in this image, seperated by co
 JSON_PROMPT = "Generate json data for each object in this image, including approx. distance in m and interest level 0-5."
 
 
-#TODO
-# how can I get an audio response from the openai api by inputting audio and images?
+def to_data_url(path: str) -> str:
+    with open(path, "rb") as fh:
+        return "data:audio/wav;base64," + base64.b64encode(fh.read()).decode("utf-8")
+
 
 def multimodal_prompt(base64_img: str, base64_audio: str, model: str = "gpt-4o-mini") -> str:
     '''
@@ -47,7 +49,6 @@ def multimodal_prompt(base64_img: str, base64_audio: str, model: str = "gpt-4o-m
 
     return ai_response.output_text
 
-
 def transcribe_img(base64_img: str, model: str = "gpt-4o-mini", prompt: str = DEFAULT_PROMPT) -> str:
     '''
     Generates a transcription describing the content of an image by calling the OpenAI API.
@@ -59,7 +60,7 @@ def transcribe_img(base64_img: str, model: str = "gpt-4o-mini", prompt: str = DE
     '''
 
     ai_response = client.responses.create(
-        model="gpt-4o-mini",
+        model=model,
         input=[
             {
                 "role": "user",
@@ -76,45 +77,43 @@ def transcribe_img(base64_img: str, model: str = "gpt-4o-mini", prompt: str = DE
 
     return ai_response.output_text
 
+def strigalize_verb(path_to_audio_file: str, diarized: bool = False) -> str:
+
+    with open(path_to_audio_file, "rb") as audio_file:
+
+        if not diarized: # default, one speaker
+            transcript = client.audio.transcriptions.create(
+                model="gpt-4o-transcribe",
+                file=audio_file,
+                temperature=0,
+                chunking_strategy="auto"
+            )
+        else: # multiple speakers
+            transcript = client.audio.transcriptions.create(
+                model="gpt-4o-transcribe-diarize",
+                file=audio_file,
+                #response_format="diarized_json",
+                chunking_strategy="auto",
+                # extra_body={
+                #     "known_speaker_names": ["Kramer", "Jerry"], # max 4 ppl
+                #     "known_speaker_references": [to_data_url("assets/pretzels.wav"), to_data_url("assets/jerry_sample.wav")],
+                # },
+            )
+            for segment in transcript.segments:
+                print(segment.speaker, segment.text, segment.start, segment.end)
 
 
-def verabalize_string(phrase: str, voice: str = "alloy"):
-    '''
-    Generates an audio file verbalizing a given string and OpenAI voice.
-    
-    :param str phrase: The phrase to be converted to audio.
-    :param str voice: A voice chosen from OpenAI's options.
-    :return str: Path to the generated audio file.
-    '''
+    print(f"Detected: {transcript.text}")
 
-    ## TODO: see if this actually works.
-
-    completion = client.chat.completions.create(
-        model="gpt-audio",
-        modalities=["text", "audio"],
-        audio={"voice": "alloy", "format": "wav"},
-        messages=[
-                {
-                    "role": "user",
-                    "content": phrase
-                }
-            ]
-    )
-
-    print(completion.choices[0])
-
-    wav_bytes = base64.b64decode(completion.choices[0].message.audio.data)
-    with open("assets/phrase_spoken.wav", "wb") as f:
-        f.write(wav_bytes)
-
-    return "assets/phrase_spoken.wav"
+    return transcript
 
 
 if __name__ == "__main__":
 
     image_path = "assets/1901.jpeg"
 
-    print(transcribe_img(image_path))
+    #print(transcribe_img(image_path))
+    strigalize_verb("assets/write-off.wav")
     
 
 # def encode_image(image_path: str) -> str:

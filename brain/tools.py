@@ -1,6 +1,6 @@
 from langchain.agents import tool
 from comms import send_cmd
-from img_transcription import transcribe_img
+from transcription import transcribe_img
 from typing import Optional
 import time, base64
 
@@ -30,11 +30,12 @@ def check_camera(focus: Optional[str]) -> str:
     '''
     Generates a description of what's in front of the robot, with an optional focus on a specific, already known object.
 
-    :param Optional[str] focus: A specific object to get more information about. If focus is None, this function will describe the whole scene.
+    :param Optional[str] focus: A spec0ific object to get more information about. If focus is None, this function will describe the whole scene.
     :return str: A description of what the camera sees.
     '''
 
-    #return "A blank white room with ten apples on the ground in front of you."
+    return "A table with a salt shaker, a glass of water, and a bowl of pretzels. A man is holding a pretzel."
+    #return "A blank white room with three apples on the ground in front of you."
 
     # Get img from esp32, convert to base64 so gpt can read it.
     resp = send_cmd("/checkcamera")
