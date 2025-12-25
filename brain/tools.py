@@ -1,10 +1,10 @@
 from langchain.agents import tool
 from comms import send_cmd
-from transcription import transcribe_img
+from transcription import transcribe_img, to_data_url
 from typing import Optional
-import time, base64
+import time, base64, asyncio
+from speak import live_verbalize_string, tts_to_wav_file
 
-from audio import text_to_speech, speech_to_text
 
 @tool(description="Toggles the blue LED on/off every 0.5 seconds for a certain amount of time.")
 def flicker_led(duration: int = 2) -> str:
@@ -26,53 +26,81 @@ def flicker_led(duration: int = 2) -> str:
     return f"Flickering LED for {duration} seconds."
 
 @tool(description="Generates a description of what's in front of the robot, with an optional focus on a specific, already known object.")
-def check_camera(focus: Optional[str]) -> str:
+def check_camera(focus: Optional[str] = None) -> str:
     '''
     Generates a description of what's in front of the robot, with an optional focus on a specific, already known object.
 
-    :param Optional[str] focus: A spec0ific object to get more information about. If focus is None, this function will describe the whole scene.
+    :param Optional[str] focus: A specific object to get more information about. If focus is None, this function will describe the whole scene.
     :return str: A description of what the camera sees.
     '''
+    print("Checking camera...")
+    if focus:
+        print(f"Focusing on {focus}...")
 
-    return "A table with a salt shaker, a glass of water, and a bowl of pretzels. A man is holding a pretzel."
+    #return "A table with a salt shaker, a glass of water, and a bowl of pretzels. A man is holding a pretzel."
     #return "A blank white room with three apples on the ground in front of you."
 
     # Get img from esp32, convert to base64 so gpt can read it.
-    resp = send_cmd("/checkcamera")
-    img_b64 = base64.b64encode(resp.content).decode("utf-8")
+    
+    #resp = send_cmd("/checkcamera")
+    
+    #img_b64 = base64.b64encode(resp.content).decode("utf-8")
+    with open("assets/1901.jpeg", "rb") as f:
+        img_b64 = base64.b64encode(f.read()).decode("utf-8")
 
     # get img from response and feed it into transcription
 
     if (focus and len(focus) > 1):
         transcription = transcribe_img(
                 base64_img=img_b64, 
-                prompt=f"Generate a max-two-sentence description of the following part of this image: {focus}"
+                prompt=f"Generate a max-two-sentence detailed description focusing on only following part of this image: {focus}"
             )
     else:
         transcription = transcribe_img(
                 base64_img=img_b64
             )
     
+    print(f"Camera sees: {transcription}")
     return transcription
 
-@tool("Verbally state a phrase string with a described inflection.")
-def verbalize_string(phrase: str, inflection: str) -> None:
+@tool(description="Verbally state a phrase string aloud with a described inflection.")
+def speak_phrase(phrase: str, inflection: str) -> None:
     '''
     Verbally state a string out loud with a described inflection, via TTS.
     
     :param str phrase: The phrase to be spoken aloud.
-    :param str inflection: How you want the phrase to be spoken, e.g. sarcastically, matter-of-fact, humorously.
+    :param str inflection: How you want the phrase to be spoken, e.g. rudely, matter-of-fact, humorously.
     :return None:
     '''
 
     # make audio file
-    audio_file_path = text_to_speech(phrase, inflection)
+    print("Verbalizing response...")
+    #asyncio.run(live_verbalize_string(response))
+    asyncio.run(tts_to_wav_file(phrase, instructions=f"Speak with the inflection: {inflection}"))
+    print(f"Said: {phrase}")
+    print(f"Inflection: {inflection}")
+    print("Finished verbalizing.")
     
     # tell esp32 to say it
     # send_cmd()
 
 
     return
+
+@tool(description="Show an emotion using your face.")
+def show_emotion(emotion: str) -> None:
+    '''
+    Show a given emotion via various lights and gizmos (the LCD screen).
+
+    :param str emotion: The emotion to show.
+    :return None:
+    '''
+    print(f"Showing emotion: {emotion}")
+    return
+
+
+
+
 
 
 ### Movement ###

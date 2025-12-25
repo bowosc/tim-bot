@@ -105,14 +105,11 @@ def strigalize_verb(path_to_audio_file: str, diarized: bool = False) -> str:
 
     print(f"Detected: {transcript.text}")
 
-    return transcript
+    return transcript.text
 
 
 if __name__ == "__main__":
 
-    image_path = "assets/1901.jpeg"
-
-    #print(transcribe_img(image_path))
     strigalize_verb("assets/write-off.wav")
     
 
