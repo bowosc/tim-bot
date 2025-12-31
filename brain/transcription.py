@@ -8,7 +8,7 @@ client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
-DEFAULT_PROMPT = "Give me a short list of objects in this image, seperated by commas."
+DEFAULT_PROMPT = 'Give me a short list of objects in this image, seperated by commas. '# If you can\'t make anything out, return "Visibility too low."'
 JSON_PROMPT = "Generate json data for each object in this image, including approx. distance in m and interest level 0-5."
 
 
@@ -78,6 +78,9 @@ def transcribe_img(base64_img: str, model: str = "gpt-4o-mini", prompt: str = DE
     return ai_response.output_text
 
 def strigalize_verb(path_to_audio_file: str, diarized: bool = False) -> str:
+    '''
+    Generate a string based on audio in an audio file.
+    '''
 
     with open(path_to_audio_file, "rb") as audio_file:
 

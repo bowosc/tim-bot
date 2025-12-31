@@ -1,11 +1,13 @@
 import requests
 from requests import Response
 
-TESTING = True
+TESTING = False
 
 
-
-BASE = "host.docker.internal:8080" #"192.168.7.227" #"http://192.168.4.1" # ESP32 web server ip
+if TESTING:
+    BASE = "192.168.7.228"
+else:
+    BASE = "host.docker.internal:8080" # #"http://192.168.4.1" # ESP32 web server ip
 
 def send_cmd(cmd: str, timeout: int = 2) -> Response:
     '''
@@ -21,8 +23,17 @@ def send_cmd(cmd: str, timeout: int = 2) -> Response:
         print(f"Sent cmd {cmd}.")
         return
     
+    
     url = f"http://{BASE}/{cmd}" # not https
+    print(f"Attempting to send request: {url}")
     r = requests.get(url, timeout=timeout)
-    #print("Response:", r.status_code, r.text)
+
+    ctype = r.headers.get("Content-Type", "")
+
+    if ctype.startswith("image/"): 
+        print("Response: [image attached]")
+    else: # not an image, so we show txt.
+        print("Response:", r.status_code, r.text)
+
     return r
 

@@ -15,10 +15,10 @@ openai = AsyncOpenAI(
 
 default_voice_instr = (
     "Voice style: fast-talking, excitable, unpredictable. "
-    "Frequent pitch changes, animated delivery. "
+    #"Frequent pitch changes, animated delivery. "
     "Slightly nasal tone, sharp consonants. Deep voice."
-    "Comedic timing with sudden emphasis on random words. "
-    "Occasional incredulous pauses, like reacting mid-thought."
+    #"Comedic timing with sudden emphasis on random words. "
+    #"Occasional incredulous pauses, like reacting mid-thought."
 )
 
 async def live_verbalize_string(phrase: str, instructions: str = "") -> None:

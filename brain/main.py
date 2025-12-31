@@ -5,28 +5,22 @@ from langchain_openai import ChatOpenAI
 
 from tools import *
 from speak import live_verbalize_string, tts_to_wav_file
+from fast_speak import fast_verbalize_string
 from transcription import strigalize_verb
 
+# -3452310319267339021 mc seed
 
 
 # https://github.com/nasa-jpl/rosa?tab=readme-ov-file
 
+#OPTIONs
+# try LLaMa local model for ROSA? less restricted. mayb
+
 #TODOs
-# try LLaMa local model? less restricted. mayb
 # thinking sound, like a xylophone ding or just the bot saying "uhhhh"
-# DO rosa audio input?
 # DO try out astream or other asynchronous stuff to stream ROSA agent response.
-## decide between:
-
-# (speech -> api -> text) + (image -> api -> text) -> api
-# api -> tools + (text -> api -> speech)
-
-## or
-
-# speech + image -> api
-# api -> speech + tools
-
-
+# DO get live audio transcription going. not openai, probably. idk.
+# DO try out non-api audio transcription and string verbalizer. maybe img transcription too.
 
 load_dotenv()  # Load variables from .env
 
@@ -41,9 +35,7 @@ openai_llm = ChatOpenAI(
 
 prompts = RobotSystemPrompts(
     embodiment_and_persona = (
-        "You are a cool robot with a camera, speaker, and lights."
-        #"You are a rude, asshole robot who often doesn't do what the user asks. "
-        #"You are allowed to, and love to, say words like 'fuck', 'shit', and 'asshole' whenever possible. "
+        "You are a hardworking, helpful robot with a camera, speaker, and lights."
     ),
     critical_instructions = (
        'The user cannot see text. You MUST respond to them by calling speak_phrase. '
@@ -54,42 +46,58 @@ prompts = RobotSystemPrompts(
     about_your_capabilities = 'Use tools as needed. Call speak_phrase only after you’ve finished any needed actions (like check_camera, flicker_led, show_emotion.'
 )
 
-agent = ROSA(ros_version=1, llm=openai_llm, tools=[flicker_led, check_camera, speak_phrase, show_emotion], prompts=prompts)
+def test_prompt(prompt: Optional[str] = None):
+    ''' Basically just active_loop but with a single prompt, a single cycle. '''
+
+    print("Prompting test initiated.")
+
+    ## Init agent
+    agent = ROSA(ros_version=1, llm=openai_llm, tools=[flicker_led, check_camera, speak_phrase, show_emotion], prompts=prompts)
+
+    ## Get intruction
+
+    # get .wav file
+    audio_file_path = "assets/test_inputs/pretzels.wav"
+
+    # audio to string
+    print("Translating audio to text...")
+    
+    if not prompt:
+        prompt = strigalize_verb(audio_file_path)
+
+    ## Generate action based on instruction
+    print("Invoking agent...")
+
+    # invoke ROSA agent
+    response = agent.invoke(prompt)
+
+
+    print(f"Response: {response}")
+
+    return
 
 
 def active_loop():
 
+    if (1+1) == 2:
+        print("Don't call active_loop, it doesn't work yet.")
+        return
+
+
     while True:
         
-        print("New loop begun. Preparing for instruction.")
-        ## Get intruction
-
-        # get .wav file
-
-        audio_file_path = "assets/pretzels.wav"
-        # audio to string
-        print("Translating audio to text...")
-        input_phrase = strigalize_verb(audio_file_path)
-
-        input_phrase = "Where are you?"
-
-        ## Generate action, response based on instruction
-        print("Invoking agent...")
-        response = agent.invoke(input_phrase)
-        print(f"Response: {response}")
         
         
-        break
+        
+        return
         # Log stuff.
 
-
-
 if __name__ == "__main__":
-
     # Gotta be in an ROS docker environment for this to run.
 
     print("Running script...")
-    active_loop()
+    test_prompt("Yeah, that would be great!")#"What's up?")
+
     #result = agent.invoke("flicker the light to tell me how many people there are in front of you.")
     #asyncio.run(live_verbalize_string(result))
     #print("Agent result:", result)

@@ -1,2 +1,7 @@
-import sounddevice as sd
-print(sd.query_devices(sd.default.device[1]))
+from comms import *
+from tools import *
+
+
+
+
+print(check_camera())

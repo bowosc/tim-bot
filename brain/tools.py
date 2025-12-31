@@ -4,6 +4,7 @@ from transcription import transcribe_img, to_data_url
 from typing import Optional
 import time, base64, asyncio
 from speak import live_verbalize_string, tts_to_wav_file
+from fast_speak import fast_verbalize_string
 
 
 @tool(description="Toggles the blue LED on/off every 0.5 seconds for a certain amount of time.")
@@ -42,18 +43,21 @@ def check_camera(focus: Optional[str] = None) -> str:
 
     # Get img from esp32, convert to base64 so gpt can read it.
     
-    #resp = send_cmd("/checkcamera")
+    resp = send_cmd("capture", timeout=6)
     
-    #img_b64 = base64.b64encode(resp.content).decode("utf-8")
-    with open("assets/1901.jpeg", "rb") as f:
-        img_b64 = base64.b64encode(f.read()).decode("utf-8")
+    img_b64 = base64.b64encode(resp.content).decode("utf-8")
+    #with open("assets/1901.jpeg", "rb") as f:
+    #    img_b64 = base64.b64encode(f.read()).decode("utf-8")
 
     # get img from response and feed it into transcription
 
     if (focus and len(focus) > 1):
         transcription = transcribe_img(
                 base64_img=img_b64, 
-                prompt=f"Generate a max-two-sentence detailed description focusing on only following part of this image: {focus}"
+                prompt=f'''
+                Generate a max-two-sentence detailed description focusing on only following part of this image: {focus}. 
+                If you can\'t make anything out, return "Visibility too low."
+                '''
             )
     else:
         transcription = transcribe_img(
@@ -75,16 +79,14 @@ def speak_phrase(phrase: str, inflection: str) -> None:
 
     # make audio file
     print("Verbalizing response...")
-    #asyncio.run(live_verbalize_string(response))
-    asyncio.run(tts_to_wav_file(phrase, instructions=f"Speak with the inflection: {inflection}"))
+    #TRYTHIS: asyncio.run(live_verbalize_string(response))
+    #asyncio.run(tts_to_wav_file(phrase, instructions=f"Speak with the inflection: {inflection}"))
+    #fast_verbalize_string(phrase)
+
     print(f"Said: {phrase}")
-    print(f"Inflection: {inflection}")
+    print(f"Inflection (not used): {inflection}")
     print("Finished verbalizing.")
     
-    # tell esp32 to say it
-    # send_cmd()
-
-
     return
 
 @tool(description="Show an emotion using your face.")
