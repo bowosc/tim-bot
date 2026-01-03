@@ -1,6 +1,10 @@
 import wave, pyaudio
 from piper import PiperVoice, SynthesisConfig
 
+
+# https://rhasspy.github.io/piper-samples/#en_US-danny-low
+
+
 def fast_verbalize_string(phrase: str) -> None:
     '''
     Generate and play text-to-speech of a given phrase with OpenAI api calls.

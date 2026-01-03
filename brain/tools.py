@@ -70,6 +70,8 @@ def check_camera(focus: Optional[str] = None) -> str:
 @tool(description="Verbally state a phrase string aloud with a described inflection.")
 def speak_phrase(phrase: str, inflection: str) -> None:
     '''
+    UNUSED? WE JUST FAST_VERBALIZE THE RESPONSE.
+
     Verbally state a string out loud with a described inflection, via TTS.
     
     :param str phrase: The phrase to be spoken aloud.

@@ -1,7 +1,4 @@
-from comms import *
-from tools import *
-
-
-
-
-print(check_camera())
+import pyaudio
+p = pyaudio.PyAudio()
+print(p.get_default_input_device_info())
+p.terminate()
