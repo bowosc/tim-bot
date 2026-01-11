@@ -1,5 +1,5 @@
 from langchain.agents import tool
-from comms import send_cmd
+from webcomms import send_cmd
 from transcription import transcribe_img, to_data_url
 from typing import Optional
 import time, base64, asyncio

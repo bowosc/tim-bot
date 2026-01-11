@@ -8,7 +8,7 @@ client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
-DEFAULT_PROMPT = 'Give me a short list of objects in this image, seperated by commas. '# If you can\'t make anything out, return "Visibility too low."'
+DEFAULT_PROMPT = 'Give me a short list of objects in this image, seperated by commas. '
 JSON_PROMPT = "Generate json data for each object in this image, including approx. distance in m and interest level 0-5."
 
 
@@ -16,6 +16,14 @@ def to_data_url(path: str) -> str:
     with open(path, "rb") as fh:
         return "data:audio/wav;base64," + base64.b64encode(fh.read()).decode("utf-8")
 
+def encode_image(image_path: str) -> str:
+    '''
+    Image to Base64
+    :param str image_path: Path to the image.
+    :return str: Base64 string of the image.
+    '''
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
 
 def multimodal_prompt(base64_img: str, base64_audio: str, model: str = "gpt-4o-mini") -> str:
     '''
@@ -115,12 +123,3 @@ if __name__ == "__main__":
 
     strigalize_verb("assets/write-off.wav")
     
-
-# def encode_image(image_path: str) -> str:
-#     '''
-#     Image to Base64
-#     :param str image_path: Path to the image.
-#     :return str: Base64 string of the image.
-#     '''
-#     with open(image_path, "rb") as image_file:
-#         return base64.b64encode(image_file.read()).decode("utf-8")

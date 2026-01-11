@@ -7,17 +7,26 @@ from tools import *
 from speak import live_verbalize_string, tts_to_wav_file
 from fast_speak import fast_verbalize_string
 from transcription import strigalize_verb
+from listen import record_audio
 
 # https://github.com/nasa-jpl/rosa?tab=readme-ov-file
 
-#OPTIONs
+#maybes
+# thinking sound, like a xylophone ding or just the bot saying "uhhhh"
+# try out astream or other asynchronous stuff to stream ROSA agent response.
 # try LLaMa local model for ROSA? less restricted. mayb
 
-#TODOs
-# thinking sound, like a xylophone ding or just the bot saying "uhhhh"
-# DO try out astream or other asynchronous stuff to stream ROSA agent response.
-# DO get live audio transcription going. not openai, probably. idk.
-# DO try out non-api audio transcription and string verbalizer. maybe img transcription too.
+
+##########  actual TODO
+# get minimal motor control working on esp32
+# get remote motor control working on esp32
+# get raspi working
+# get esp32 <- raspi comms working
+# get minimal testing tim working
+# finalize controls
+# build body
+# turn on tim
+
 
 load_dotenv()  # Load variables from .env
 

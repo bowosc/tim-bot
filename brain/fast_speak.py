@@ -2,7 +2,7 @@ import wave, pyaudio
 from piper import PiperVoice, SynthesisConfig
 
 
-# https://rhasspy.github.io/piper-samples/#en_US-danny-low
+# https://huggingface.co/rhasspy/piper-voices/tree/main/en/en_US/danny/low
 
 
 def fast_verbalize_string(phrase: str) -> None:
@@ -21,7 +21,7 @@ def fast_verbalize_string(phrase: str) -> None:
         normalize_audio=False, # use raw audio from voice
     )
 
-    voice = PiperVoice.load("assets/voices/en_US-ryan-high.onnx")
+    voice = PiperVoice.load("assets/voices/en_US-danny-low.onnx")
     p = pyaudio.PyAudio()
     stream = None
 
@@ -48,4 +48,4 @@ def fast_verbalize_string(phrase: str) -> None:
 
 
 if __name__ == "__main__":
-    fast_verbalize_string("These pretzels are making me thirsty!")
+    fast_verbalize_string("These pretzels are making me thirsty.")
