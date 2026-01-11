@@ -7,6 +7,7 @@ from speak import live_verbalize_string, tts_to_wav_file
 from fast_speak import fast_verbalize_string
 from pi_cam import PiCamera2Backend
 
+bob = PiCamera2Backend()
 
 @tool(description="Toggles the blue LED on/off every 0.5 seconds for a certain amount of time.")
 def flicker_led(duration: int = 2) -> str:
@@ -51,8 +52,8 @@ def check_camera(focus: Optional[str] = None) -> str:
     # img_b64 = base64.b64encode(resp.content).decode("utf-8")
     ####################
 
-
-    img_b64 = PiCamera2Backend.get_jpeg_bytes()
+    
+    img_b64 = bob.get_jpeg_bytes()
     
     #with open("assets/1901.jpeg", "rb") as f:
     #    img_b64 = base64.b64encode(f.read()).decode("utf-8")
