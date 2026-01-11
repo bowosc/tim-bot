@@ -5,6 +5,7 @@ from typing import Optional
 import time, base64, asyncio
 from speak import live_verbalize_string, tts_to_wav_file
 from fast_speak import fast_verbalize_string
+from pi_cam import PiCamera2Backend
 
 
 @tool(description="Toggles the blue LED on/off every 0.5 seconds for a certain amount of time.")
@@ -43,14 +44,21 @@ def check_camera(focus: Optional[str] = None) -> str:
 
     # Get img from esp32, convert to base64 so gpt can read it.
     
-    resp = send_cmd("capture", timeout=6)
+
+    ################### ESP32 version
+    # resp = send_cmd("capture", timeout=6)
     
-    img_b64 = base64.b64encode(resp.content).decode("utf-8")
+    # img_b64 = base64.b64encode(resp.content).decode("utf-8")
+    ####################
+
+
+    img_b64 = PiCamera2Backend.get_jpeg_bytes()
+    
     #with open("assets/1901.jpeg", "rb") as f:
     #    img_b64 = base64.b64encode(f.read()).decode("utf-8")
 
     # get img from response and feed it into transcription
-
+    
     if (focus and len(focus) > 1):
         transcription = transcribe_img(
                 base64_img=img_b64, 
