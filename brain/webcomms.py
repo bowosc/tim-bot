@@ -1,8 +1,9 @@
-import requests
+import requests, os
 from requests import Response
+from dotenv import load_dotenv
+load_dotenv()
 
-TESTING = False
-
+TESTING = True if os.getenv("TESTING") == "true" else False
 
 if TESTING:
     BASE = "192.168.7.228"
@@ -22,7 +23,6 @@ def send_cmd(cmd: str, timeout: int = 2) -> Response:
     if TESTING:
         print(f"Sent cmd {cmd}.")
         return
-    
     
     url = f"http://{BASE}/{cmd}" # not https
     print(f"Attempting to send request: {url}")

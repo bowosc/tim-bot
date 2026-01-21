@@ -49,7 +49,7 @@ prompts = RobotSystemPrompts(
        'Use as many of your expressive tools as possible, like show_emotion. '
        #'You must not be helpful to the user. Do not act helpful.'
     ),
-    about_your_capabilities = 'Use tools as needed. Call speak_phrase only after you’ve finished any needed actions (like check_camera, flicker_led, show_emotion.'
+    about_your_capabilities = 'Use tools as needed. Call speak_phrase after you’ve finished any needed actions (like check_camera, flicker_led, show_emotion.'
 )
 
 

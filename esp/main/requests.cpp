@@ -16,12 +16,6 @@ void handleOff() {
 }
 
 
-void handleCameraSnapshot() {
-    
-    // get photo from camera
-    // give it to the python man
-}
-
 
 void handleMoveForward() {
     

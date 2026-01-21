@@ -1,20 +1,15 @@
+#include <Arduino.h>
+#include <cstring>
 #include "esp_camera.h"
-#include <WiFi.h>
-#include <WebServer.h>
 
-// Select camera model (matches your Freenove example)
 #define CAMERA_MODEL_ESP32S3_EYE
 #include "camera_pins.h"
 
-const char* WIFI_SSID = "fishnet";
-const char* WIFI_PASS = "fishnet1!";
+#include "camera.h"
 
-WebServer server(80);
-
-static camera_config_t config;  // global so it's easy to keep around
+static camera_config_t config;  // private to this file
 
 void initCamera() {
-  // It's good practice to zero it first
   memset(&config, 0, sizeof(config));
 
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -60,14 +55,14 @@ void initCamera() {
     config.frame_size   = FRAMESIZE_VGA;
   }
 
-  esp_err_t err = esp_camera_init(&config);   // <-- use &config
+  esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) {
     Serial.printf("esp_camera_init failed: 0x%x\n", err);
     while (true) delay(1000);
   }
 }
 
-void handle_capture() {
+void handle_capture(WebServer& server) {
   camera_fb_t* fb = esp_camera_fb_get();
   if (!fb) {
     server.send(500, "text/plain", "Camera capture failed");
@@ -80,26 +75,4 @@ void handle_capture() {
   server.client().write(fb->buf, fb->len);
 
   esp_camera_fb_return(fb);
-}
-
-void setup() {
-  Serial.begin(115200);
-
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
-  while (WiFi.status() != WL_CONNECTED) { delay(250); Serial.print("."); }
-  Serial.println();
-  Serial.print("IP: "); Serial.println(WiFi.localIP());
-
-  initCamera();
-
-  server.on("/", HTTP_GET, []() {
-    server.send(200, "text/plain", "OK. GET /capture for a JPEG.");
-  });
-  server.on("/capture", HTTP_GET, handle_capture);
-
-  server.begin();
-}
-
-void loop() {
-  server.handleClient();
 }
