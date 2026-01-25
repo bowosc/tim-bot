@@ -1,9 +1,10 @@
 from __future__ import annotations
 import time
+from picamera2 import Picamera2
 
 class PiCamera2Backend:
     def __init__(self):
-        from picamera2 import Picamera2  # import INSIDE so Mac never touches it
+        # import INSIDE so Mac never touches it
         self.picam2 = Picamera2()
         self.picam2.configure(self.picam2.create_still_configuration())
         self.picam2.start()
