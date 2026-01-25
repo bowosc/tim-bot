@@ -30,7 +30,7 @@ from listen import record_audio
 
 load_dotenv()  # Load variables from .env
 
-ROS_VERSION: int = 2 # 2 if we chill; 1 if we freak
+ROS_VERSION: int = 2 # 2 if we chill 1 if we freak
 
 openai_llm = ChatOpenAI(
     model_name="gpt-4o-mini", # ROSA docs like gpt-4o, should test alts. 4o is prriiceeeyy. mini is better.
@@ -89,7 +89,7 @@ def test_prompt(prompt: Optional[str] = None):
 def active_loop():
 
     ## Init agent
-    agent = ROSA(ros_version=ROS_VERSION, llm=openai_llm, tools=[flicker_led, check_camera, show_emotion], prompts=prompts) #speak_phrase
+    agent = ROSA(ros_version=ROS_VERSION, llm=openai_llm, tools=[flicker_led, check_camera, show_emotion, speak_phrase], prompts=prompts) #speak_phrase
 
     while True:
         print("Prompting initiated.")

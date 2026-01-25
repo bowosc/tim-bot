@@ -2,7 +2,7 @@ from langchain.agents import tool
 from webcomms import send_cmd
 from transcription import transcribe_img, to_data_url
 from typing import Optional
-import time, base64, asyncio
+import time, base64, asyncio, cv2
 from speak import live_verbalize_string, tts_to_wav_file
 from fast_speak import fast_verbalize_string
 # from pi_cam import PiCamera2Backend
@@ -46,11 +46,16 @@ def check_camera(focus: Optional[str] = None) -> str:
     # Get img from esp32, convert to base64 so gpt can read it.
     
 
-    ################### ESP32 version
-    resp = send_cmd("capture", timeout=6)
+    # ################### ESP32 version
+    # resp = send_cmd("capture", timeout=6)
     
-    img_b64 = base64.b64encode(resp.content).decode("utf-8")
-    ####################
+    # img_b64 = base64.b64encode(resp.content).decode("utf-8")
+    # ####################
+
+    cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    ret, frame = cap.read()
+    print(ret, frame.shape if ret else "no frame")
+
 
     
     #img_b64 = bob.get_jpeg_bytes()
@@ -79,7 +84,6 @@ def check_camera(focus: Optional[str] = None) -> str:
 @tool(description="Verbally state a phrase string aloud with a described inflection.")
 def speak_phrase(phrase: str, inflection: str) -> None:
     '''
-    UNUSED? WE JUST FAST_VERBALIZE THE RESPONSE.
 
     Verbally state a string out loud with a described inflection, via TTS.
     
@@ -89,10 +93,11 @@ def speak_phrase(phrase: str, inflection: str) -> None:
     '''
 
     # make audio file
+    
     print("Verbalizing response...")
     #TRYTHIS: asyncio.run(live_verbalize_string(response))
-    #asyncio.run(tts_to_wav_file(phrase, instructions=f"Speak with the inflection: {inflection}"))
-    #fast_verbalize_string(phrase)
+    asyncio.run(tts_to_wav_file(phrase, instructions=f"Speak with the inflection: {inflection}"))
+    fast_verbalize_string(phrase)
 
     print(f"Said: {phrase}")
     print(f"Inflection (not used): {inflection}")
