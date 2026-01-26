@@ -52,15 +52,20 @@ def check_camera(focus: Optional[str] = None) -> str:
     # img_b64 = base64.b64encode(resp.content).decode("utf-8")
     # ####################
 
-    p = subprocess.Popen(
+    result = subprocess.run(
         ["rpicam-jpeg", "-o", "-nopreview", "--timeout", "1"],
         stdout = subprocess.PIPE,
         stderr = subprocess.DEVNULL,
+        check = True
     )
 
-    jpeg = p.stdout.read()
-    img_b64 = base64.b64encode(jpeg).decode()
+    jpeg_bytes = result.stdout
+    if not jpeg_bytes:
+        raise RuntimeError("Camera returned an empty frame.")
     
+    b64 = base64.b64encode(jpeg_bytes).decode("ascii")
+    data_url = f"data:image/jpeg;base64,{b64}"
+
     #img_b64 = bob.get_jpeg_bytes()
     
     #with open("assets/1901.jpeg", "rb") as f:
@@ -70,7 +75,7 @@ def check_camera(focus: Optional[str] = None) -> str:
     
     if (focus and len(focus) > 1):
         transcription = transcribe_img(
-                base64_img=img_b64, 
+                base64_img=data_url, 
                 prompt=f'''
                 Generate a max-two-sentence detailed description focusing on only following part of this image: {focus}. 
                 If you can\'t make anything out, return "Visibility too low."
@@ -78,7 +83,7 @@ def check_camera(focus: Optional[str] = None) -> str:
             )
     else:
         transcription = transcribe_img(
-                base64_img=img_b64
+                base64_img=data_url
             )
     
     print(f"Camera sees: {transcription}")
