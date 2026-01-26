@@ -29,11 +29,12 @@ def flicker_led(duration: int = 2) -> str:
     return f"Flickering LED for {duration} seconds."
 
 @tool(description="Generates a description of what's in front of the robot, with an optional focus on a specific, already known object.")
-def check_camera(focus: Optional[str] = None) -> str:
+def check_camera(focus: Optional[str] = None, quality: int = 40) -> str:
     '''
     Generates a description of what's in front of the robot, with an optional focus on a specific, already known object.
 
     :param Optional[str] focus: A specific object to get more information about. If focus is None, this function will describe the whole scene.
+    :param int quality: 1-100, quality of image taken.
     :return str: A description of what the camera sees.
     '''
     print("Checking camera...")
@@ -53,7 +54,7 @@ def check_camera(focus: Optional[str] = None) -> str:
     # ####################
 
     result = subprocess.run(
-        ["rpicam-jpeg", "--nopreview", "--timeout", "1500", "-o", "-"],
+        ["rpicam-jpeg", "--nopreview", "--timeout", "1500", "-q", f"{quality}", "-o", "-"],
         stdout = subprocess.PIPE,
         stderr = subprocess.PIPE,
         check = True
@@ -63,10 +64,7 @@ def check_camera(focus: Optional[str] = None) -> str:
     if not jpeg_bytes:
         raise RuntimeError("Camera returned an empty frame.")
     
-    b64 = base64.b64encode(jpeg_bytes).decode("ascii")
-    data_url = f"data:image/jpeg;base64,{b64}"
-
-    #img_b64 = bob.get_jpeg_bytes()
+    img_b64 = base64.b64encode(jpeg_bytes).decode("ascii")
     
     #with open("assets/1901.jpeg", "rb") as f:
     #    img_b64 = base64.b64encode(f.read()).decode("utf-8")
@@ -75,7 +73,7 @@ def check_camera(focus: Optional[str] = None) -> str:
     
     if (focus and len(focus) > 1):
         transcription = transcribe_img(
-                base64_img=data_url, 
+                base64_img=img_b64, 
                 prompt=f'''
                 Generate a max-two-sentence detailed description focusing on only following part of this image: {focus}. 
                 If you can\'t make anything out, return "Visibility too low."
@@ -83,7 +81,7 @@ def check_camera(focus: Optional[str] = None) -> str:
             )
     else:
         transcription = transcribe_img(
-                base64_img=data_url
+                base64_img=img_b64
             )
     
     print(f"Camera sees: {transcription}")
