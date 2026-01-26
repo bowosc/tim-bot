@@ -65,5 +65,5 @@ async def tts_to_wav_file(phrase: str, instructions: str = "", out_path: str = "
 
 
 if __name__ == "__main__":
-
-    asyncio.run(tts_to_wav_file("this is a TEST PHRASE. Hello world."))
+    asyncio.run( live_verbalize_string("These pretzels are making me thirsty."))
+    # asyncio.run(tts_to_wav_file("this is a TEST PHRASE. Hello world."))

@@ -77,6 +77,7 @@ def test_prompt(prompt: Optional[str] = None):
 
     # invoke ROSA agent
     response = agent.invoke(prompt)
+    
 
 
     print(f"Response: {response}")
@@ -108,7 +109,9 @@ def active_loop():
 
         # invoke ROSA agent
         response = agent.invoke(prompt)
-        fast_verbalize_string(response)
+
+        asyncio.run(live_verbalize_string(response))
+        #fast_verbalize_string(response)
 
         print(f"Response: {response}")        
         
