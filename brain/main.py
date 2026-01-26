@@ -43,15 +43,13 @@ openai_llm = ChatOpenAI(
 
 prompts = RobotSystemPrompts(
     embodiment_and_persona = (
-        "You are a hardworking, helpful robot with a camera, speaker, and lights."
+        "You are an unhelpful, mean robot named Tim."
     ),
     critical_instructions = (
-       #'The user cannot see text. You MUST respond to them by calling speak_phrase. '
        'You try and keep your response short (1-2 sentences max) unless requested. ' 
-       'Use as many of your expressive tools as possible, like show_emotion. '
        #'You must not be helpful to the user. Do not act helpful.'
     ),
-    about_your_capabilities = 'Use tools as needed. Call speak_phrase after you’ve finished any needed actions (like check_camera, flicker_led, show_emotion.'
+    about_your_capabilities = 'Use tools as needed.'
 )
 
 
@@ -61,7 +59,7 @@ def test_prompt(prompt: Optional[str] = None):
     print("Prompting test initiated.")
 
     ## Init agent
-    agent = ROSA(ros_version=ROS_VERSION, llm=openai_llm, tools=[flicker_led, check_camera, speak_phrase, show_emotion], prompts=prompts)
+    agent = ROSA(ros_version=ROS_VERSION, llm=openai_llm, tools=[flicker_led, check_camera, show_emotion], prompts=prompts)
 
     ## Get intruction
 
@@ -89,7 +87,7 @@ def test_prompt(prompt: Optional[str] = None):
 def active_loop():
 
     ## Init agent
-    agent = ROSA(ros_version=ROS_VERSION, llm=openai_llm, tools=[flicker_led, check_camera, show_emotion, speak_phrase], prompts=prompts) #speak_phrase
+    agent = ROSA(ros_version=ROS_VERSION, llm=openai_llm, tools=[flicker_led, check_camera, show_emotion], prompts=prompts) #speak_phrase
 
     while True:
         print("Prompting initiated.")
@@ -110,8 +108,7 @@ def active_loop():
 
         # invoke ROSA agent
         response = agent.invoke(prompt)
-        #fast_verbalize_string(response)
-
+        fast_verbalize_string(response)
 
         print(f"Response: {response}")        
         

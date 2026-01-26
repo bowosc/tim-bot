@@ -102,7 +102,7 @@ def speak_phrase(phrase: str, inflection: str) -> None:
     
     print("Verbalizing response...")
     #TRYTHIS: asyncio.run(live_verbalize_string(response))
-    asyncio.run(tts_to_wav_file(phrase, instructions=f"Speak with the inflection: {inflection}"))
+    #asyncio.run(tts_to_wav_file(phrase, instructions=f"Speak with the inflection: {inflection}"))
     fast_verbalize_string(phrase)
 
     print(f"Said: {phrase}")
