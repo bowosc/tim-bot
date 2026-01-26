@@ -53,9 +53,9 @@ def check_camera(focus: Optional[str] = None) -> str:
     # ####################
 
     result = subprocess.run(
-        ["rpicam-jpeg", "-o", "-nopreview", "--timeout", "1"],
+        ["rpicam-jpeg", "--nopreview", "--timeout", "1500", "-o", "-"],
         stdout = subprocess.PIPE,
-        stderr = subprocess.DEVNULL,
+        stderr = subprocess.PIPE,
         check = True
     )
 
