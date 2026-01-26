@@ -2,7 +2,7 @@ from langchain.agents import tool
 from webcomms import send_cmd
 from transcription import transcribe_img, to_data_url
 from typing import Optional
-import time, base64, asyncio, cv2
+import time, base64, asyncio, subprocess
 from speak import live_verbalize_string, tts_to_wav_file
 from fast_speak import fast_verbalize_string
 # from pi_cam import PiCamera2Backend
@@ -52,11 +52,14 @@ def check_camera(focus: Optional[str] = None) -> str:
     # img_b64 = base64.b64encode(resp.content).decode("utf-8")
     # ####################
 
-    cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
-    ret, frame = cap.read()
-    print(ret, frame.shape if ret else "no frame")
+    p = subprocess.Popen(
+        ["rpicam-jpeg", "-o", "-nopreview", "--timeout", "1"],
+        stdout = subprocess.PIPE,
+        stderr = subprocess.DEVNULL,
+    )
 
-
+    jpeg = p.stdout.read()
+    img_b64 = base64.b64encode(jpeg).decode()
     
     #img_b64 = bob.get_jpeg_bytes()
     
