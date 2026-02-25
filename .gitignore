@@ -1,0 +1,10 @@
+.env
+.vscode
+.DS_Store
+/brain/__pycache__
+brain/__pycache__
+
+/brain/assets
+brain/assets
+/brain/venv
+brain/venv

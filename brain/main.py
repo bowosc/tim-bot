@@ -15,14 +15,13 @@ from listen import record_audio
 # thinking sound, like a xylophone ding or just the bot saying "uhhhh"
 # try out astream or other asynchronous stuff to stream ROSA agent response.
 # try LLaMa local model for ROSA? less restricted. mayb
+# try out https://unmute.sh/
 
 
-##########  actual TODO
-# get minimal motor control working on esp32
-# get remote motor control working on esp32
-# get raspi working
-# get esp32 <- raspi comms working
-# get minimal testing tim working
+########## TODO
+# get audio to text input working
+# figure out actuation endpoints on esp32
+# hook up pi to esp32
 # finalize controls
 # build body
 # turn on tim
@@ -46,8 +45,8 @@ prompts = RobotSystemPrompts(
         "You are an unhelpful, mean robot named Tim."
     ),
     critical_instructions = (
-       'You try and keep your response short (1-2 sentences max) unless requested. ' 
-       #'You must not be helpful to the user. Do not act helpful.'
+       'You try and keep your response short (1-2 sentences max) unless requested. '
+       'You must not be helpful to the user. Do not act helpful.'
     ),
     about_your_capabilities = 'Use tools as needed.'
 )
@@ -110,7 +109,7 @@ def active_loop():
         # invoke ROSA agent
         response = agent.invoke(prompt)
 
-        asyncio.run(live_verbalize_string(response))
+        asyncio.run(live_verbalize_string(response, "Speak quickly."))
         #fast_verbalize_string(response)
 
         print(f"Response: {response}")        
@@ -120,10 +119,9 @@ def active_loop():
         # Log stuff.
 
 if __name__ == "__main__":
-    # Gotta be in an ROS docker environment for this to run.
+    # Gotta be in an ROS docker environment for this to run on Mac.
 
-    print("Running script...")
-    #test_prompt("Yeah, that would be great!")#"What's up?")
+    print("Waking up Tim...")
 
     active_loop()
     

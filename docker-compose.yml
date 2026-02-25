@@ -1,0 +1,11 @@
+services:
+  ros:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tim-ros:humble
+    working_dir: /work
+    volumes:
+      - .:/work
+    stdin_open: true
+    tty: true

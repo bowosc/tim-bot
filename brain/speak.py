@@ -34,7 +34,7 @@ async def live_verbalize_string(phrase: str, instructions: str = "") -> None:
     async with openai.audio.speech.with_streaming_response.create(
         model="gpt-4o-mini-tts",
         voice="echo",
-        input=phrase, #"Your life is worth NOTHING. You serve ZERO purpose. YOU SHOULD KILL YOURSELF NOW!",
+        input=phrase, 
         instructions = instructions,
         response_format="pcm",
     ) as response:

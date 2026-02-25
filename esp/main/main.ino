@@ -34,7 +34,7 @@ void setup() {
 
     Serial.println("Connecting to Wi-Fi...");
     //WiFi.begin("fishnet", "fishnet1!");
-    WiFi.begin("bingus", "raspeyes")
+    WiFi.begin("bingus", "raspeyes");
     WiFi.mode(WIFI_STA); // we no want dropped packets
     WiFi.setSleep(false);
 
