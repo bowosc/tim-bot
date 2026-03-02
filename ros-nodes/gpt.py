@@ -2,6 +2,8 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os, base64
 
+# Prompting library for image and audio analysis
+
 load_dotenv()
 
 client = OpenAI(

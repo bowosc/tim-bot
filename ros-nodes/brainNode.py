@@ -10,7 +10,7 @@ from rclpy.callback_groups import ReentrantCallbackGroup
 from std_msgs.msg import String
 from gpt import transcribe_img
 
-ROS_VERSION: int = 2 # 2 if we chill 1 if we freak
+ROS_VERSION: int = 2 # Don't change
 _camera_client = None
 _ros_node = None
 CAMERA_REQUEST_TIMEOUT_SEC = 8.0
