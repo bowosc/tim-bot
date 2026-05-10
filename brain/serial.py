@@ -8,7 +8,7 @@ ser = serial.Serial(
 )
 
 #time.sleep(2)  # allow ESP32 reset
-
+# the quick brown fox jumped over the lazy dog.
 
 def send_serial_command(cmd: str) -> None:
     '''

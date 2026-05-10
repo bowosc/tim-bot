@@ -3,22 +3,30 @@
 
 #include "requests.h"
 
-#include "camera.h"
+// #include "camera.h"
 
 
 WebServer server(80); // init webserver object
 
 
 // To be used in case of no good wifi network.
-bool offgrid = false;
+bool offgrid = true;
 
 
 void setup() {
 
   // Start er up
   Serial.begin(115200); // baud rate
-  pinMode(2, OUTPUT); // get that pin up
-  initCamera(); // guess what this does
+
+  pinMode(2, OUTPUT); // get them pins up
+  pinMode(motor1pin1, OUTPUT);
+  pinMode(motor1pin2, OUTPUT);
+  pinMode(motor2pin1, OUTPUT);
+  pinMode(motor2pin2, OUTPUT);
+
+  // initCamera(); // guess what this does
+
+  
 
   if (offgrid == true) {
 
@@ -55,14 +63,16 @@ void setup() {
 
 
   // define HTTP endpoints 
-  server.on("/on", handleOn);
-  server.on("/off", handleOff);
-  server.on("/turn", handleTurn);
-  server.on("/moveforward", handleMoveForward);
+  server.on("/led_on", handleLEDOn);
+  server.on("/led_off", handleLEDOff);
+  server.on("/turn_right", handleTurnRight);
+  server.on("/turn_left", handleTurnLeft);
+  server.on("/move_forward", handleMoveForward);
+  server.on("/move_backward", handleMoveBackward);
 
-  server.on("/capture", HTTP_GET, []() {
-    handle_capture(server);
-  });
+  // server.on("/capture", HTTP_GET, []() {
+  //   handle_capture(server);
+  // });
 
   server.begin();
 
@@ -83,5 +93,15 @@ void setup() {
 }
 
 void loop() {
+
+  // delay(3000);
+  // handleMoveForward();
+  // // delay(2000);
+  // // handleMoveBackward();
+  // // delay(2000);
+  // handleTurnRight();
+  // // delay(2000);
+  // handleTurnLeft();
+
   server.handleClient(); // yeah. i got this
 }

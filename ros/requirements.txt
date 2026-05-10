@@ -1,0 +1,16 @@
+# Python dependencies for the `ros_nodes` package.
+#
+# Install ROS 2 packages such as `rclpy`, `std_msgs`, and `std_srvs`
+# from the ROS distribution or container image, not from pip.
+
+# LLM / agent stack
+jpl-rosa==1.0.9
+langchain==0.3.27
+langchain-openai==0.3.35
+openai==2.13.0
+python-dotenv==1.2.1
+
+# Hardware / audio runtime
+pyserial==3.5
+PyAudio==0.2.14
+piper-tts==1.3.0

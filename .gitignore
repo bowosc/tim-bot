@@ -1,6 +1,9 @@
 .env
 .vscode
 .DS_Store
+/build
+/install
+/log
 /brain/__pycache__
 brain/__pycache__
 
@@ -8,3 +11,9 @@ brain/__pycache__
 brain/assets
 /brain/venv
 brain/venv
+
+ros/assets
+ros/assets/
+
+assets
+.assets

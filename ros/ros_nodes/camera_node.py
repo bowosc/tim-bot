@@ -6,8 +6,9 @@ import rclpy
 from rclpy.node import Node
 from std_srvs.srv import Trigger
 
-from gpt import transcribe_img
+from ros_nodes.gpt import transcribe_img
 
+# try https://github.com/facebookresearch/scenescript
 
 class CameraNode(Node):
     def __init__(self):
@@ -35,7 +36,7 @@ class CameraNode(Node):
 
     def on_check_camera(self, request: Trigger.Request, response: Trigger.Response) -> Trigger.Response:
         return Trigger.Response(success=True, message="A sign that says TEST.")
-    
+
         quality = 40
 
         try:
@@ -67,9 +68,12 @@ def main(args=None):
     node = CameraNode()
     try:
         rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == "__main__":
