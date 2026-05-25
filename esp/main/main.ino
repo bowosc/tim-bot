@@ -10,8 +10,36 @@ WebServer server(80); // init webserver object
 
 
 // To be used in case of no good wifi network.
-bool offgrid = true;
+bool offgrid = false;
 
+
+void connectToNetwork() {
+
+  Serial.println("Connecting to Wi-Fi...");
+  //WiFi.begin("fishnet", "fishnet1!");
+  WiFi.begin("bingus", "raspeyes");
+  WiFi.mode(WIFI_STA); // we no want dropped packets
+  WiFi.setSleep(false);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println(); // line break for pretty printing
+
+  Serial.println("Wi-Fi connected!\n");
+
+  Serial.print("ESP32 IP address: ");
+  Serial.println(WiFi.localIP());
+  Serial.println(); // line break for pretty printing
+}
+
+
+void hostOwnNetwork() {
+  WiFi.softAP("TimBot", "password"); // SSID + password
+  Serial.print("AP IP address: ");
+  Serial.println(WiFi.softAPIP()); // usually gonna be 192.168.4.1
+}
 
 void setup() {
 
@@ -32,31 +60,13 @@ void setup() {
 
     // Host own network
 
-    WiFi.softAP("TimBot", "password"); // SSID + password
-    Serial.print("AP IP address: ");
-    Serial.println(WiFi.softAPIP()); // usually gonna be 192.168.4.1
+    hostOwnNetwork();
 
   } else {
 
     // Connect to preset network
 
-    Serial.println("Connecting to Wi-Fi...");
-    //WiFi.begin("fishnet", "fishnet1!");
-    WiFi.begin("bingus", "raspeyes");
-    WiFi.mode(WIFI_STA); // we no want dropped packets
-    WiFi.setSleep(false);
-
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-    }
-    Serial.println(); // line break for pretty printing
-
-    Serial.println("Wi-Fi connected!\n");
-
-    Serial.print("ESP32 IP address: ");
-    Serial.println(WiFi.localIP());
-    Serial.println(); // line break for pretty printing
+    connectToNetwork();
 
   };
   
@@ -69,6 +79,9 @@ void setup() {
   server.on("/turn_left", handleTurnLeft);
   server.on("/move_forward", handleMoveForward);
   server.on("/move_backward", handleMoveBackward);
+  server.on("/switch_to_existing_network", connectToNetwork);
+  server.on("/switch_to_local_network", hostOwnNetwork);
+
 
   // server.on("/capture", HTTP_GET, []() {
   //   handle_capture(server);
