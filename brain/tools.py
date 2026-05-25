@@ -127,29 +127,73 @@ def show_emotion(emotion: str) -> None:
 
 
 
-### Movement ###
+### ESP32 Controls ###
 
-@tool("Moves the robot forward a specified amount. The distance can be negative, to move backwards.")
-def move_forward(distance: int, speed: int) -> None:
+@tool("Moves the robot forward for 500ms.")
+def move_forward() -> None:
     '''
-    Moves the robot forward a specified amount. The distance can be negative, to move backwards.
+    Moves the robot forward for 500ms.
 
-    
-    :param int distance: How far to move forward, in meters. This value can be negative.
-    :param int speed: How quickly to move, on a scale of 1 to 5.
     :return None:
     '''
-
+    print("Sending move_forward command.")
+    send_cmd("move_forward")
     return
 
-@tool
-def turn(degrees: int, speed: int) -> None:
-    '''
-    Turns the robot a specified amount.
 
-    :param int degrees: How many degrees to turn, negative being clockwise and positive being counterclockwise.
-    :param int speed: How quickly to turn, on a scale of 1 to 5. Note that faster turns may be less precise.
+@tool("Moves the robot backward for 500ms.")
+def move_backward() -> None:
+    '''
+    Moves the robot backward for 500ms.
+
     :return None:
     '''
-
+    print("Sending move_backward command.")
+    send_cmd("move_backward")
     return
+
+
+@tool("Turns the robot 90 degrees right.")
+def turn_right() -> None:
+    '''
+    Turns the robot 90 degrees right.
+
+    :return None:
+    '''
+    print("Sending turn_right command.")
+    send_cmd("turn_right")
+    return
+
+@tool("Turns the robot 90 degrees left.")
+def turn_left() -> None:
+    '''
+    Turns the robot 90 degrees left.
+
+    :return None:
+    '''
+    print("Sending turn_left command.")
+    send_cmd("turn_left")
+    return
+
+@tool("Flickers LED on and off for one second.")
+def flicker_led() -> None:
+    '''
+    Flickers the LED on the robot for one second.
+
+    :return None:
+    '''
+    print("Sending flicker_led pseudocommand.")
+
+    send_cmd("led_on")
+    time.sleep(0.2)
+    send_cmd("led_off")
+    time.sleep(0.2)
+    send_cmd("led_on")
+    time.sleep(0.2)
+    send_cmd("led_off")
+    time.sleep(0.2)
+    send_cmd("led_on")
+    time.sleep(0.2)
+    send_cmd("led_off")
+    return
+

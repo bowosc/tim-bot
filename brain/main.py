@@ -1,5 +1,5 @@
 from rosa import ROSA, RobotSystemPrompts
-import os
+import os, whisper
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 
@@ -87,7 +87,20 @@ def test_prompt(prompt: Optional[str] = None):
 def active_loop():
 
     ## Init agent
-    agent = ROSA(ros_version=ROS_VERSION, llm=openai_llm, tools=[flicker_led, check_camera, show_emotion], prompts=prompts) #speak_phrase
+    agent = ROSA(
+        ros_version = ROS_VERSION, 
+        llm = openai_llm, 
+        tools =
+            [
+                flicker_led, check_camera, show_emotion,
+                move_forward, move_backward,
+                flicker_led,
+                turn_right,
+                turn_left,
+            ], 
+        prompts = prompts
+    ) 
+    
     transcription_model = whisper.load_model("base")
 
     while True:
@@ -114,7 +127,7 @@ def active_loop():
         asyncio.run(live_verbalize_string(response, "Speak quickly."))
         #fast_verbalize_string(response)
 
-        print(f"Response: {response}")        
+        print(f"Response: {response}")
         
         
     return
