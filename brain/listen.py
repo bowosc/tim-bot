@@ -1,8 +1,107 @@
-import os, asyncio, pyaudio, wave, threading, time
+import asyncio
+import audioop
+import os
+import tempfile
+import threading
+import time
+import wave
+
+import numpy as np
+import pyaudio
+import sounddevice as sd
+import whisper
+
+SAMPLE_RATE = 16000
 
 
-import pyaudio, wave, threading
-import pyaudio, wave, threading, audioop
+def write_wav_file(path: str, sample_rate: int, audio: np.ndarray) -> None:
+    audio = np.asarray(audio, dtype=np.float32)
+    audio = np.clip(audio, -1.0, 1.0)
+    pcm16 = (audio * np.iinfo(np.int16).max).astype(np.int16)
+
+    with wave.open(path, "wb") as wav_file:
+        wav_file.setnchannels(1)
+        wav_file.setsampwidth(2)
+        wav_file.setframerate(sample_rate)
+        wav_file.writeframes(pcm16.tobytes())
+
+def record_until_pause(silence_threshold=0.01, silence_duration=0.9, max_recording_seconds=15):
+    """
+    Records from microphone until speech naturally ends.
+
+    silence_threshold:
+        Lower = more sensitive.
+        Higher = requires louder speech.
+
+    silence_duration:
+        How many seconds of silence means "the sentence ended".
+    """
+
+    print("Listening...")
+
+    audio_chunks = []
+    started_speaking = False
+    silence_start = None
+    start_time = time.time()
+
+    chunk_duration = 0.1
+    chunk_size = int(SAMPLE_RATE * chunk_duration)
+
+    with sd.InputStream(
+        samplerate=SAMPLE_RATE,
+        channels=1,
+        dtype="float32",
+        blocksize=chunk_size,
+    ) as stream:
+        while True:
+            chunk, _ = stream.read(chunk_size)
+            chunk = chunk.flatten()
+
+            volume = np.sqrt(np.mean(chunk ** 2))
+
+            if volume > silence_threshold:
+                started_speaking = True
+                silence_start = None
+                audio_chunks.append(chunk)
+
+            elif started_speaking:
+                audio_chunks.append(chunk)
+
+                if silence_start is None:
+                    silence_start = time.time()
+
+                if time.time() - silence_start > silence_duration:
+                    break
+
+            if time.time() - start_time > max_recording_seconds:
+                break
+
+    if not audio_chunks:
+        return None
+
+    audio = np.concatenate(audio_chunks)
+    return audio
+
+
+def listen_and_transcribe(model):
+    
+    audio = record_until_pause()
+
+    if audio is None:
+        return ""
+
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio:
+        temp_path = temp_audio.name
+
+    write_wav_file(temp_path, SAMPLE_RATE, audio)
+
+    try:
+        result = model.transcribe(temp_path)
+        return result["text"].strip()
+    finally:
+        os.remove(temp_path)
+
+
 
 def record_audio(filename, chunk=2048, device_index=1, out_rate=48000):
     p = pyaudio.PyAudio()
@@ -62,4 +161,7 @@ def record_audio(filename, chunk=2048, device_index=1, out_rate=48000):
 
 
 if __name__ == "__main__":
-    record_audio("test.wav")
+    # record_audio("test.wav")
+    while True:
+        text = listen_and_transcribe()
+        print("You said:", text)

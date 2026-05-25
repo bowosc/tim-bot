@@ -7,7 +7,7 @@ from tools import *
 from speak import live_verbalize_string, tts_to_wav_file
 from fast_speak import fast_verbalize_string
 from transcription import strigalize_verb
-from listen import record_audio
+from listen import listen_and_transcribe
 
 # https://github.com/nasa-jpl/rosa?tab=readme-ov-file
 
@@ -88,20 +88,22 @@ def active_loop():
 
     ## Init agent
     agent = ROSA(ros_version=ROS_VERSION, llm=openai_llm, tools=[flicker_led, check_camera, show_emotion], prompts=prompts) #speak_phrase
+    transcription_model = whisper.load_model("base")
 
     while True:
         print("Prompting initiated.")
 
         # # get .wav file
-        audio_file_path = "assets/test_inputs/pretzels.wav"
+        # audio_file_path = "assets/test_inputs/pretzels.wav"
 
         # # audio to string
         # print("Translating audio to text...")
 
-        prompt = input("Prompt > ")
-        
-        if not prompt:
-            prompt = strigalize_verb(audio_file_path)
+        # prompt = input("Prompt > ")
+        prompt = listen_and_transcribe(transcription_model)
+
+        # if not prompt:
+        #     prompt = strigalize_verb(audio_file_path)
 
         ## Generate action based on instruction
         print("Invoking agent...")
