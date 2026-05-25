@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Tim Bot Terminal
+Comment=Open Tim Bot in a terminal window after desktop login
+Exec=/bin/bash -lc 'cd /home/bopi/Desktop/tim-bot/brain && exec /home/bopi/Desktop/tim-bot/brain/venv/bin/python /home/bopi/Desktop/tim-bot/brain/main.py'
+Terminal=true
+X-GNOME-Autostart-enabled=true

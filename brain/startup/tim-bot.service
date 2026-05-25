@@ -1,0 +1,15 @@
+[Unit]
+Description=Tim Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=bopi
+WorkingDirectory=/home/bopi/Desktop/tim-bot/brain
+ExecStart=/home/bopi/Desktop/tim-bot/brain/venv/bin/python /home/bopi/Desktop/tim-bot/brain/main.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

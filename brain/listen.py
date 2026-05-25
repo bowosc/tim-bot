@@ -1,7 +1,5 @@
 import asyncio
 import audioop
-import os
-import tempfile
 import threading
 import time
 import wave
@@ -84,22 +82,15 @@ def record_until_pause(silence_threshold=0.01, silence_duration=0.9, max_recordi
 
 
 def listen_and_transcribe(model):
-    
     audio = record_until_pause()
 
     if audio is None:
         return ""
 
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio:
-        temp_path = temp_audio.name
-
-    write_wav_file(temp_path, SAMPLE_RATE, audio)
-
-    try:
-        result = model.transcribe(temp_path)
-        return result["text"].strip()
-    finally:
-        os.remove(temp_path)
+    # Pass the waveform directly to Whisper so local transcription does not
+    # depend on an external ffmpeg binary just to re-read our own temp WAV.
+    result = model.transcribe(audio)
+    return result["text"].strip()
 
 
 

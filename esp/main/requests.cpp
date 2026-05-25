@@ -48,6 +48,7 @@ void handleMoveForward() {
     digitalWrite(motor2pin1, LOW);
     digitalWrite(motor2pin2, LOW);
 
+    server.send(200, "text/plain", "Moved forward");
 }
 
 void handleMoveBackward() {
@@ -72,6 +73,7 @@ void handleMoveBackward() {
     digitalWrite(motor2pin1, LOW);
     digitalWrite(motor2pin2, LOW);
 
+    server.send(200, "text/plain", "Moved backward");
 }
 void handleTurnRight() {
     Serial.println("Turning Right");
@@ -95,6 +97,7 @@ void handleTurnRight() {
     digitalWrite(motor2pin1, LOW);
     digitalWrite(motor2pin2, LOW);
 
+    server.send(200, "text/plain", "Turned right");
 }
 
 void handleTurnLeft() {
@@ -119,4 +122,5 @@ void handleTurnLeft() {
     digitalWrite(motor2pin1, LOW);
     digitalWrite(motor2pin2, LOW);
 
+    server.send(200, "text/plain", "Turned left");
 }

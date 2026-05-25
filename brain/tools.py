@@ -129,7 +129,7 @@ def show_emotion(emotion: str) -> None:
 
 ### ESP32 Controls ###
 
-@tool("Moves the robot forward for 500ms.")
+@tool(description="Moves the robot forward for 500ms.")
 def move_forward() -> None:
     '''
     Moves the robot forward for 500ms.
@@ -141,7 +141,7 @@ def move_forward() -> None:
     return
 
 
-@tool("Moves the robot backward for 500ms.")
+@tool(description="Moves the robot backward for 500ms.")
 def move_backward() -> None:
     '''
     Moves the robot backward for 500ms.
@@ -153,7 +153,7 @@ def move_backward() -> None:
     return
 
 
-@tool("Turns the robot 90 degrees right.")
+@tool(description="Turns the robot 90 degrees right.")
 def turn_right() -> None:
     '''
     Turns the robot 90 degrees right.
@@ -164,7 +164,7 @@ def turn_right() -> None:
     send_cmd("turn_right")
     return
 
-@tool("Turns the robot 90 degrees left.")
+@tool(description="Turns the robot 90 degrees left.")
 def turn_left() -> None:
     '''
     Turns the robot 90 degrees left.
@@ -175,7 +175,7 @@ def turn_left() -> None:
     send_cmd("turn_left")
     return
 
-@tool("Flickers LED on and off for one second.")
+@tool(description="Flickers LED on and off for one second.")
 def flicker_led() -> None:
     '''
     Flickers the LED on the robot for one second.
@@ -196,4 +196,3 @@ def flicker_led() -> None:
     time.sleep(0.2)
     send_cmd("led_off")
     return
-

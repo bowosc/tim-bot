@@ -8,7 +8,9 @@ TESTING = True if os.getenv("TESTING") == "true" else False
 if TESTING:
     BASE = "192.168.7.228"
 else:
-    BASE = "host.docker.internal:8080" # #"http://192.168.4.1" # ESP32 web server ip
+    
+    BASE = "172.20.10.6"
+    #BASE = "host.docker.internal:8080" # #"http://192.168.4.1" # ESP32 web server ip
 
 def send_cmd(cmd: str, timeout: int = 2) -> Response:
     '''
